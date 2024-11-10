@@ -1,0 +1,4 @@
+#Cluspro dockinf files are located in ~/Gromacs/ClusPro, the first number indicates the complex number
+# the tutotaial (http://www.mdtutorials.com/gmx/lysozyme/index.html) contains basic information to run MD simulation, however changes have been made according to our structures and computing capabilities steps below
+
+gmx mdrun -deffnm md_0_1 -nb gpu
