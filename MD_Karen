@@ -1,6 +1,10 @@
 #Cluspro dockinf files are located in ~/Gromacs/ClusPro, the first number indicates the complex number
 # the tutotaial (http://www.mdtutorials.com/gmx/lysozyme/index.html) contains basic information to run MD simulation, however changes have been made according to our structures and computing capabilities steps below
 #replace XXX.pdb for the antibody name, we are using the numbers associated with each complex, the output keep is as XXX_clean.pdb (XXX=antibody number)
+#Force field: Amber99SB-ILDN, TIP3 water, Cubic,Ions.mdp (from tutorials, "default"), (verlet cut off, r list, r coulumb , rVDW = 1.0)
+## load gromacs ##
+module load gromacs/0
+
 grep -v HOH 1aki.pdb > 1AKI_clean.pdb     
 gmx pdb2gmx -f 1AKI_clean.pdb -o 1AKI_processed.gro -water spce  (same as #3)
 gmx mdrun -deffnm md_0_1 -nb gpu
@@ -19,10 +23,54 @@ gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
 gmx mdrun -deffnm npt
 gmx energy -f npt.edr -o pressure.xvg
 gmx energy -f npt.edr -o density.xvg
+
+#### 100 ns MD simulation, 50 000 000 steps
 gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr
 gmx mdrun -deffnm md_0_1 -nb gpu
-##### Aanalysis #######
+
+
+##### Aanalysis - In Progress  #######
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o md_0_1_noPBC.xtc -pbc mol -center
 gmx rms -s md_0_1.tpr -f md_0_1_noPBC.xtc -o rmsd.xvg -tu ns
 gmx rms -s em.tpr -f md_0_1_noPBC.xtc -o rmsd_xtal.xvg -tu ns
 gmx gyrate -s md_0_1.tpr -f md_0_1_noPBC.xtc -o gyrate.xvg
+
+#### --- Job File - HPCC UCR ##
+          #!/bin/bash -l
+          
+          #SBATCH --nodes=1
+          #SBATCH --ntasks=1
+          #SBATCH --cpus-per-task=2
+          #SBATCH --mem=50G
+          #SBATCH --time=22:00:00     # 1 day and 15 minutes
+          #SBATCH --mail-user=kpaco@kgi.edu
+          #SBATCH --mail-type=ALL
+          #SBATCH --job-name="77_md1_gpu_final"
+          #SBATCH -p gpu # You can use any of the following; epyc, intel, batch, highmem, gpu
+          
+          # Print current date
+          date
+          
+          # Load gromacs
+          module load gromacs/2024.3-gpu
+          
+          #run the application
+          gmx mdrun -deffnm md_0_1 -nstlist 40 -nb gpu
+### Jobs HCP UCR#
+sbatch -p gpu --gres=gpu:k80:1 --mem=50g --time=1:00:00 77_MD.sh
+sbatch -p gpu --gres=gpu:p100:1 --mem=50g --time=1:00:00 SBATCH_SCRIPT.sh
+sbatch -p gpu --gres=gpu:a100:1 --mem=50g --time=1:00:00 SBATCH_SCRIPT.sh
+===== TAKE note of the job ID
+### mobaxterm keep alive ##
+Settings -> Configuration -> SSH -> SSH keepalive
+### SHOWS all jobs:
+squeue -u $USER --start 
+
+### show a specific job
+scontrol show job #24834   jobID 
+ to check your sun, open your slurm file slum#jobID., check the number os steps and the time.
+###
+scancel jobID
+
+
+
