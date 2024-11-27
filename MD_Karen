@@ -62,6 +62,10 @@ sbatch -p gpu --gres=gpu:k80:1 --mem=50g --time=1:00:00 77_MD.sh
 sbatch -p gpu --gres=gpu:p100:1 --mem=50g --time=1:00:00 SBATCH_SCRIPT.sh
 sbatch -p gpu --gres=gpu:a100:1 --mem=50g --time=1:00:00 SBATCH_SCRIPT.sh
 ===== TAKE note of the job ID
+### Make the SBATCH_SCRIPT.sh executable
+chmod +x SBATCH_SCRIPT.sh #This will be necessary becuase the .sh file calls itself when using an specific GPU
+ls -l SBATCH_SCRIPT.sh #to verify the scropt is executable
+
 ### mobaxterm keep alive ##
 Settings -> Configuration -> SSH -> SSH keepalive
 ### SHOWS all jobs:
