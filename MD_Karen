@@ -14,8 +14,8 @@ gmx editconf -f 1AKI_processed.gro -o 1AKI_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp 1AKI_newbox.gro -cs spc216.gro -o 1AKI_solv.gro -p topol.top
 gmx grompp -f ions.mdp -c 1AKI_solv.gro -p topol.top -o ions.tpr
 gmx genion -s ions.tpr -o 1AKI_solv_ions.gro -p topol.top -pname NA -nname CL -neutral
-gmx grompp -f minim.mdp -c 1AKI_solv_ions.gro -p topol.top -o em.tpr #here the minimization will take like 26/30 min but the processing speed can be increased if we use a .sh file, I will add a .sh file here just in case we want to use it
-gmx mdrun -v -deffnm em
+gmx grompp -f minim.mdp -c 1AKI_solv_ions.gro -p topol.top -o em.tpr 
+gmx mdrun -v -deffnm em #here the minimization will take like 26/30 min but the processing speed can be increased if we use a .sh file, I will add a .sh file here just in case we want to use it
 gmx energy -f em.edr -o potential.xvg
 gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
 gmx mdrun -deffnm nv
