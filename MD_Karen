@@ -5,15 +5,16 @@
 ## load gromacs ##
 module load gromacs/0
 
-grep -v HOH 1aki.pdb > 1AKI_clean.pdb     
-gmx pdb2gmx -f 1AKI_clean.pdb -o 1AKI_processed.gro -water spce  (same as #3)
-gmx mdrun -deffnm md_0_1 -nb gpu
+grep -v HOH 1aki.pdb > 1AKI_clean.pdb   #I think this is not neccesary because we dont have ater in our strcuture at this point
+gmx pdb2gmx -f 1AKI_clean.pdb -o 1AKI_processed.gro -water spce  (same as #3) #when you use "-water space" it wont let you to choose the TIP3P water, shall we remove this small piece?
+   gmx pdb2gmx -f 1AKI.pdb -o 1AKI_processed.gro -aminacid (if an aminoacid is causeing you problems, I.E -his)
+gmx mdrun -deffnm md_0_1 -nb gpu #I think this should be removerd? I believe here you call the MD run
 ## define box and solvate
 gmx editconf -f 1AKI_processed.gro -o 1AKI_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp 1AKI_newbox.gro -cs spc216.gro -o 1AKI_solv.gro -p topol.top
 gmx grompp -f ions.mdp -c 1AKI_solv.gro -p topol.top -o ions.tpr
 gmx genion -s ions.tpr -o 1AKI_solv_ions.gro -p topol.top -pname NA -nname CL -neutral
-gmx grompp -f minim.mdp -c 1AKI_solv_ions.gro -p topol.top -o em.tpr
+gmx grompp -f minim.mdp -c 1AKI_solv_ions.gro -p topol.top -o em.tpr #here the minimization will take like 26/30 min but the processing speed can be increased if we use a .sh file, I will add a .sh file here just in case we want to use it
 gmx mdrun -v -deffnm em
 gmx energy -f em.edr -o potential.xvg
 gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
