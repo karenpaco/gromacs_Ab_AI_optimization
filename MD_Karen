@@ -4,7 +4,6 @@
 #Force field: Amber99SB-ILDN, TIP3 water, Cubic,Ions.mdp (from tutorials, "default"), (verlet cut off, r list, r coulumb , rVDW = 1.0)
 ## load gromacs ##
 module load gromacs/0
-
 grep -v HOH 1aki.pdb > 1AKI_clean.pdb   #I think this is not neccesary because we dont have ater in our strcuture at this point
 gmx pdb2gmx -f 1AKI_clean.pdb -o 1AKI_processed.gro -water spce  (same as #3) #when you use "-water space" it wont let you to choose the TIP3P water, shall we remove this small piece?
    gmx pdb2gmx -f 1AKI.pdb -o 1AKI_processed.gro -aminacid (if an aminoacid is causeing you problems, I.E -his)
@@ -14,6 +13,7 @@ gmx editconf -f 1AKI_processed.gro -o 1AKI_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp 1AKI_newbox.gro -cs spc216.gro -o 1AKI_solv.gro -p topol.top
 gmx grompp -f ions.mdp -c 1AKI_solv.gro -p topol.top -o ions.tpr
 gmx genion -s ions.tpr -o 1AKI_solv_ions.gro -p topol.top -pname NA -nname CL -neutral
+## add salt NaCl!!!!
 gmx grompp -f minim.mdp -c 1AKI_solv_ions.gro -p topol.top -o em.tpr 
 gmx mdrun -v -deffnm em #here the minimization will take like 26/30 min but the processing speed can be increased if we use a .sh file, I will add a .sh file here just in case we want to use it
 gmx energy -f em.edr -o potential.xvg
