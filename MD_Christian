@@ -3,11 +3,11 @@ python -m propka model.gro -o 7.4
     #(we use TIP3P water which is compatible with our Amber99SB-ILDN forcefield)
 gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb -o model_processed.gro -inter
     #(in this case is we have to determine the protonation state of histidine)
-    #there is not possible to set an specific pH value (for our purposes is goinf to be 7.4) but it is possible to analyse and 
+    #there is not possible to set an specific pH value (for our purposes is going to be 7.4) but it is possible to analyse and 
     #determine all the protonation states of each aminoacid specificly if we analyse them with propka, determine their PKa and 
     #finally see which is the protonation state of each aminoacid at 7.4 pH)
     #after we analyze with propka at a specific pH "python -m propka model.gro -o 7.4"
-    #we shoud use "pdb2gmx -f protein.pdb -inter" and it wil guide us thought each aminoacid to determine their protonation state
+    #we shoud use "pdb2gmx -f protein.pdb -inter" and it wil guide us throught each aminoacid to determine their protonation state
 gmx editconf -f model_processed.gro -o model_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top 
     #(SPC216: simple point charge water is a pre-equilibrated box of 216 SPC water molecules and it is used for 3-site water models like TIP3P)
