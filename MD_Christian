@@ -1,0 +1,18 @@
+gmx pdb2gmx -f model.pdb -o model_processed.gro (we use TIP3P water which is compatible with our Amber99SB-ILDN forcefield)
+gmx pdb2gmx -f model.pdb -o model_processed.gro -his (in this case is we have to determine the protonation state of histidine)
+gmx editconf -f model_processed.gro -o model_newbox.gro -c -d 1.0 -bt cubic
+gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top
+gmx grompp -f ions.mdp -c model_solv.gro -p topol.top -o ions.tpr
+gmx genion -s ions.tpr -o model_solv_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15 (gromacs reads the concentration in mol/L and our target is 150mM)
+gmx grompp -f minim.mdp -c model_solv_ions.gro -p topol.top -o em.tpr
+gmx mdrun -v -deffnm em (here we wil use our energy_minimization.sh)
+gmx energy -f em.edr -o potential.xvg
+gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
+gmx mdrun -deffnm nv (here we will use our nvt_ensemble.sh)
+gmx energy -f nvt.edr -o temperature.xvg
+gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
+gmx mdrun -deffnm npt (here we will use our npt_ensemble.sh)
+gmx energy -f npt.edr -o pressure.xvg
+gmx energy -f npt.edr -o density.xvg
+gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr
+sbatch -p gpu --gres=gpu:a100:2 --mem=100g --time=168:00:00 md.sh (here we use our md.sh)
