@@ -41,6 +41,25 @@ gmx rms -s em.tpr -f md_0_1_noPBC.xtc -o rmsd_xtal.xvg -tu ns
 gmx rmsf -s md_0_1.tpr -f md_0_1_noPBC1.xtc -o rmsf.xvg
 
 ##generating differnet index files to analyze RMSD and RMSF separatelly 
-gmx make_ndx -f md_0_1.gro -o index.ndx
-gmx rms -s md_0_1.tpr -f md_0_1_noPBC1.xtc -n index.ndx -o rmsd.xvg -tu ns
-gmx rmsf -s md_0_1.tpr -f md_0_1_noPBC1.xtc -n index.ndx -o rmsf.xvg
+gmx make_ndx -f md_0_1.gro -o index.ndx 
+    #a 1-100
+    #name atoms1
+    #a 101-200
+    #name atoms2
+##analysing RMSD separately using the index file
+gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o fitted.xtc -pbc mol -center
+    #select system (group 0) and then protein (group 1)
+gmx rms -s model.pdb -f fitted.xtc -n index.ndx -o rmsd_protein1.xvg -tu ns
+
+    #if for some reason this produce an error try this instead (spliting the model.pdb in 2 per protein, this should not be needed and typically generates more errors)
+gmx editconf -f model.pdb -o protein1_reference.pdb -n index.ndx
+    #select atoms1
+gmx rms -s protein1_reference.pdb -f fitted.xtc -n index.ndx -o rmsd_protein1.xvg
+    #select atoms
+    #select atoms1
+gmx editconf -f model.pdb -o protein2_reference.pdb -n index.ndx
+    #select atoms2
+gmx rms -s protein2_reference.pdb -f fitted.xtc -n index.ndx -o rmsd_protein1.xvg
+    #select atoms2
+    #select atoms2
+
