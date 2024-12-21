@@ -47,6 +47,7 @@ gmx make_ndx -f md_0_1.gro -o index.ndx
     #a 101-200
     #name atoms2
 ##analysing RMSD separately using the index file
+    #this only works to generate hte RMSD of each protein, it will not work for the entire complex
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o fitted.xtc -pbc mol -center
     #select system (group 0) and then protein (group 1)
 gmx rms -s model.pdb -f fitted.xtc -n index.ndx -o rmsd_protein1.xvg -tu ns
