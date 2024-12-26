@@ -67,3 +67,14 @@ gmx rms -s protein2_reference.pdb -f fitted.xtc -n index.ndx -o rmsd_protein1.xv
     #select atoms2
     #select atoms2
 
+##Generating the Cluster Analysis
+gmx trjconv -s md_0_1.tpr -f trajectory.xtc -o md_0_1.xtc -pbc mol -center -fit rot+trans 
+    #this is nost necesary but just in case. You can use the one in step 51
+gmx cluster -s md_0_1.tpr -f md_0_1_noPBC.xtc -n index.ndx -o clusters.xpm -g cluster.log -dist cluster.xvg -method gromos -cutoff 0.2
+gmx cluster -s md_0_1.tpr -f md_0_1_noPBC.xtc -o index.xpm -g cluster.log -cl cluster.pdb 
+
+    #This for the system in general
+    #I selected the Carbon alpha or backbone, the protein choice takes a lot of time so the system wil kill it
+    #I seelcted alpha carbon or backbone for the output as well
+    #In case this is not ok delete the index fiel from the code line (it shoud not be a problen becuase here you are analysing all the system but just in case)
+
