@@ -2,15 +2,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data, skipping comments and metadata
-data = np.loadtxt("Downloads/temperature.xvg", comments=["#", "@"])
+data = np.loadtxt("Downloads/temperature.xvg", comments=["#", "@"]) #load your .xvg file here
 
 # Extract
 time = data[:, 0]  # First column: time (ns)
 temperature = data[:, 1]  # Second column: temperature (K)
 
+# Calculate the average temperature
+def moving_average(data, window_size):
+    return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
+    
+# Define a window size for the running average
+window_size = 10 #adjust this to your convenience. according to gromacs 10 or 11 is a good approach
+temp_avg = moving_average(temperature, window_size)
+time_avg = time[:len(temp_avg)]
+
 # Plot
 plt.figure(figsize=(10, 8))
-plt.plot(time, temperature, label="Temperature (K)", color="red", linewidth=1)
+plt.plot(time, temperature, label="Temperature (K)", color="black", linewidth=2)
+plt.plot(time_avg, temp_avg, label=f"Average (Window: {window_size})", color="red", linewidth=2)
+#grid configuration
+ax = plt.gca()
+ax.grid(which = "both")
+ax.grid(which = "major", linewidth = 1)
+ax.grid(which = "minor", linewidth = 0.2)
+ax.minorticks_on()
+
 
 #Check average and standard deviation
 mean = np.mean(temperature)
@@ -33,7 +50,7 @@ plt.xlabel("Time (ns)")
 plt.ylabel("Temperature (K)")
 plt.title("Temperature Over Time (NVT Simulation)")
 plt.legend()
-plt.grid()
+plt.grid(color = 'grey', linestyle = '-', linewidth = 0.5)
 
 # Show the plot
 plt.tight_layout()
@@ -45,15 +62,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data, skipping comments and metadata
-data = np.loadtxt("Downloads/pressure.xvg", comments=["#", "@"])
+data = np.loadtxt("Downloads/pressure.xvg", comments=["#", "@"]) #load your .xvg file here
 
 # Extract
 time = data[:, 0]  # First column: time (ns)
 pressure = data[:, 1]  # Second column: pressure (bar)
 
+# Calculate the average pressure
+def moving_average(data, window_size):
+    return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
+
+# Define a window size for the running average
+window_size = 10 #adjust this to your convenience. according to gromacs 10 or 11 is a good approach
+press_avg = moving_average(pressure, window_size)
+time_avg = time[:len(press_avg)]
+
 # Plot
 plt.figure(figsize=(10, 8))
-plt.plot(time, pressure, label="Pressure (bar)", color="red", linewidth=1)
+plt.plot(time, pressure, label="Pressure (bar)", color="black", linewidth=2)
+plt.plot(time_avg, press_avg, label=f"Average (Window: {window_size})", color="red", linewidth=2)
+#grid configuration
+ax = plt.gca()
+ax.grid(which = "both")
+ax.grid(which = "major", linewidth = 1)
+ax.grid(which = "minor", linewidth = 0.2)
+ax.minorticks_on()
 
 #Check average and standard deviation
 mean = np.mean(pressure)
@@ -76,7 +109,7 @@ plt.xlabel("Time (ns)")
 plt.ylabel("Pressure (bar)")
 plt.title("Pressure Over Time (NPT Simulation)")
 plt.legend()
-plt.grid()
+plt.grid(color = 'grey', linestyle = '-', linewidth = 0.5)
 
 # Show the plot
 plt.tight_layout()
@@ -88,15 +121,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data, skipping comments and metadata
-data = np.loadtxt("Downloads/density.xvg", comments=["#", "@"])
+data = np.loadtxt("Downloads/density.xvg", comments=["#", "@"]) #load your .xvg file here
 
 # Extract
 time = data[:, 0]  # First column: time (ns)
 density = data[:, 1]  # Second column: density (Kg/m^3)
 
+# Calculate the average pressure
+def moving_average(data, window_size):
+    return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
+
+# Define a window size for the running average
+window_size = 10
+dens_avg = moving_average(density, window_size)
+time_avg = time[:len(dens_avg)]
+
+
 # Plot
 plt.figure(figsize=(10, 8))
-plt.plot(time, density, label="Density (Kg/m^3)", color="red", linewidth=1)
+plt.plot(time, density, label="Density (Kg/m^3)", color="black", linewidth=2)
+plt.plot(time_avg, dens_avg, label=f"Average (Window: {window_size})", color="red", linewidth=2)
+#grid configuration
+ax = plt.gca()
+ax.grid(which = "both")
+ax.grid(which = "major", linewidth = 1)
+ax.grid(which = "minor", linewidth = 0.2)
+ax.minorticks_on()
 
 #Check average and standard deviation
 mean = np.mean(density)
@@ -119,7 +169,7 @@ plt.xlabel("Time (ns)")
 plt.ylabel("Density (Kg/m^3)")
 plt.title("Density Over Time (NPT Simulation)")
 plt.legend()
-plt.grid()
+plt.grid(color = 'grey', linestyle = '-', linewidth = 0.5)
 
 # Show the plot
 plt.tight_layout()
@@ -132,7 +182,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline, BSpline
 
 # Load data, skipping comments and metadata
-data = np.loadtxt("Downloads/em_potential.xvg", comments=["#", "@"])
+data = np.loadtxt("Downloads/em_potential.xvg", comments=["#", "@"]) #load your .xvg file here
 
 # Extract
 time = data[:, 0]  # First column: time (ns)
@@ -145,12 +195,19 @@ smooth = spl(xnew)
 
 # Plot
 plt.figure(figsize=(10, 8))
-plt.plot(xnew, smooth, label="Potential (KJ/mol)", color="red", linewidth=1)
+plt.plot(xnew, smooth, label="Potential (KJ/mol)", color="black", linewidth=2)
 #plt.plot(time, potential, label="Potential (KJ/mol)", color="red", linewidth=1) use this if you dont want the smooth algorithm
+#grid configuration
+ax = plt.gca()
+ax.grid(which = "both")
+ax.grid(which = "major", linewidth = 1)
+ax.grid(which = "minor", linewidth = 0.2)
+ax.minorticks_on()
 
 # Potential Plot
 plt.xlabel("Time (ns)")
 plt.ylabel("Potential (KJ/mol)")
 plt.title("Energy Minimization")
 plt.legend()
-plt.grid()
+plt.grid(color = 'grey', linestyle = '-', linewidth = 0.5)
+
