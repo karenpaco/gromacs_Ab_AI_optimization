@@ -80,3 +80,29 @@ gmx cluster -s md_0_1.tpr -f cluster.xtc -o cluster.xpm -g cluster.log -cl clust
     #I seelcted alpha carbon or backbone for the output as well
     #In case this is not ok delete the index fiel from the code line (it shoud not be a problen becuase here you are analysing all the system but just in case)
 
+#########Generating images suring the molecualr dynamics run
+  for t in {0..100000..1000}; do           #0..100000..1000 means from 0 to 100000ps every 1000ps of snapshot
+      gmx trjconv -s md_0_1.tpr -f md_0_1_noPBC.xtc -n index.ndx -o snapshot_${t}ps.pdb -dump $t
+  done
+     #then select the numbers to evaluate if you want the protein (1) or the system (0), etc
+#it is possible to also use this will print 1 or 17 or the needed number several times (the ones that you need)
+    for t in {0..100000..1000}; do
+        echo "Processing time $t ps...";
+        printf "17\n" | gmx trjconv -s md_0_1.tpr -f md_0_1_noPBC.xtc -n index.ndx -o snapshot_${t}ps.pdb -dump $t; done
+    done 
+
+#this will generate different .pdb files that can be joint using is a single one using: 
+cat snapshot1.pdb snapshot2.pdb snapshot3.pdb > combined_snapshots.pdb
+#but it is better if you upload each snapshot separatelly and combine them in pymol, then aligned them to generate a superimpose picture with all the snapshots
+#here is an automatic way to combine al the generated snapshots in one .pdb file:
+
+    output_file="combined_snapshots.pdb"
+    > $output_file  # Clear the output file if it exists
+
+    for pdb_file in snapshot_*ps.pdb; do
+        echo "Adding $pdb_file to $output_file..."
+        echo "MODEL $(basename $pdb_file .pdb | grep -o '[0-9]*')" >> $output_file
+        cat "$pdb_file" >> $output_file
+        echo "ENDMDL" >> $output_file
+    done
+
