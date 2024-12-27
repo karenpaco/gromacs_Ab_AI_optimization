@@ -1,0 +1,32 @@
+gmx pdb2gmx -f model.pdb -o model_processed.gro
+python -m propka model.gro -o 7.4
+    #(we use TIP3P water which is compatible with our Amber99SB-ILDN forcefield)
+gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb -o model_processed.gro -inter
+    #(in this case is we have to determine the protonation state of histidine)
+    #there is not possible to set an specific pH value (for our purposes is going to be 7.4) but it is possible to analyse and 
+    #determine all the protonation states of each aminoacid specificly if we analyse them with propka, determine their PKa and 
+    #finally see which is the protonation state of each aminoacid at 7.4 pH)
+    #after we analyze with propka at a specific pH "python -m propka model.gro -o 7.4"
+    #we shoud use "pdb2gmx -f protein.pdb -inter" and it wil guide us throught each aminoacid to determine their protonation state
+gmx editconf -f model_processed.gro -o model_newbox.gro -c -d 1.0 -bt cubic
+gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top 
+    #(SPC216: simple point charge water is a pre-equilibrated box of 216 SPC water molecules and it is used for 3-site water models like TIP3P)
+gmx grompp -f ions.mdp -c model_solv.gro -p topol.top -o ions.tpr
+gmx genion -s ions.tpr -o model_solv_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15 
+    #(gromacs reads the concentration in mol/L and our target is 150mM)
+gmx grompp -f minim.mdp -c model_solv_ions.gro -p topol.top -o em.tpr
+gmx mdrun -v -deffnm em 
+    #(here we wil use our energy_minimization.sh)
+    #sbatch script.sh (it has to be executable, if for any case it is not use "chmod +x script.sh and then "dos2unix script.sh")
+gmx energy -f em.edr -o potential.xvg
+gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
+gmx mdrun -deffnm nv 
+    #(here we will use our nvt_ensemble.sh)
+gmx energy -f nvt.edr -o temperature.xvg
+gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
+gmx mdrun -deffnm npt 
+    #(here we will use our npt_ensemble.sh)
+gmx energy -f npt.edr -o pressure.xvg
+gmx energy -f npt.edr -o density.xvg
+gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr
+sbatch -p gpu --gres=gpu:a100:2 --mem=100g --time=168:00:00 md.sh 
