@@ -93,7 +93,6 @@ gmx cluster -s md_0_1.tpr -f cluster.xtc -o cluster.xpm -g cluster.log -cl clust
 
 #this will generate different .pdb files that can be joint using is a single one using: 
 cat snapshot1.pdb snapshot2.pdb snapshot3.pdb > combined_snapshots.pdb
-#but it is better if you upload each snapshot separatelly and combine them in pymol, then aligned them to generate a superimpose picture with all the snapshots
 #here is an automatic way to combine al the generated snapshots in one .pdb file:
 
     output_file="combined_snapshots.pdb"
@@ -106,3 +105,5 @@ cat snapshot1.pdb snapshot2.pdb snapshot3.pdb > combined_snapshots.pdb
         echo "ENDMDL" >> $output_file
     done
 
+#If you upload each snapshot separatelly and combine them in pymol, then aligned them to generate a superimpose picture with all the snapshots
+#it seems there is no automatic way to do this, so you will have to do it manually in pymol or try to find a pymol script
