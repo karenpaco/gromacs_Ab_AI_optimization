@@ -43,9 +43,12 @@ gmx rmsf -s md_0_1.tpr -f md_0_1_noPBC1.xtc -o rmsf.xvg
 ##generating differnet index files to analyze RMSD and RMSF separatelly 
 gmx make_ndx -f md_0_1.gro -o index.ndx 
     #a 1-100
-    #name atoms1
+    #name protein1
     #a 101-200
-    #name atoms2
+    #name protein2
+    #a 500-5600
+    #name complex but ignoring the first 500 atoms
+    #as you can see here,this is how you can select a specific protein or a section of a protein in the complex to be analyzed in RMSF or RMSD
 ##analysing RMSD and RMSF separately using the index file
     #this only works to generate hte RMSD of each protein, it will not work for the entire complex
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o fitted.xtc -pbc mol -center
