@@ -110,3 +110,25 @@ cat snapshot1.pdb snapshot2.pdb snapshot3.pdb > combined_snapshots.pdb
 
 #If you upload each snapshot separatelly and combine them in pymol, then aligned them to generate a superimpose picture with all the snapshots
 #it seems there is no automatic way to do this, so you will have to do it manually in pymol or try to find a pymol script
+
+#Interaction analysis
+#you can just se the interaction_analysis.py file to generate the heatmaps of intercation and the index file for the analysis in gromacs
+#(pair wise analysis, minimun distance interaction and number of hydrogen bonds). 
+#for this analysis always use the md_0_1.xtc (it is going to be that file every time you want to generate a heatmail with MDAnalysis in python, do nto use the md_0_1_noPBC,xtc)
+#here you will generate a interacting_residues_cogs.ndx which is an index file that separates only the residues (for each protein) that are interacting between these 2 proteins
+#below an specific cutof porint (normaly below 5A), whit this index file oyu can perform the minimun distance, pariwise distance and number of hidrogen bonds analysis in GROMACS
+
+#minimun distance 
+gmx mindist -s md_0_1.tpr -f md_0_1.xtc -n interacting_residues_cogs.ndx -od mindist.xvg -on num_contact.xvg -d 0.5
+     #the interacting_residues_cogs.ndx is the ndx file generated in the interaction_analysis.py, the -d is the distance in nm
+
+#pairwise distance
+gmx pairdist -s md_0_1.tpr -f md_0_1.xtc -n interacting_residues_cogs.ndx -o pairdist.xvg -ref Interacting_Protein1 -sel Interacting_Protein2
+     #-ref Interacting_Protein1 -sel Interacting_Protein2 were determined in interacting_residues_cogs.ndx
+
+#Hidrogen bonds
+gmx hbond -s md_0_1.tpr -f md_0_1_noPBC1.xtc -n interacting_residues_cogs.ndx -num hbondsnew.xvg
+     #this tells you the number of hidrogen bonds present in the interactions. 
+
+#It is posible to perform a salt bridge analysis, the code is in interaction_analysis.py
+
