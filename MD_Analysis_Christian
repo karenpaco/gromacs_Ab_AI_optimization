@@ -130,5 +130,9 @@ gmx pairdist -s md_0_1.tpr -f md_0_1.xtc -n interacting_residues_cogs.ndx -o pai
 gmx hbond -s md_0_1.tpr -f md_0_1_noPBC1.xtc -n interacting_residues_cogs.ndx -num hbondsnew.xvg
      #this tells you the number of hidrogen bonds present in the interactions. 
 
+#secondary structure analysis
+gmx dssp -f md_0_1.xtc -s md_0_1.tpr -o structure.xvg -num numstruc.xvg
+    #This will generate a .dat file that wil be used in the python script to generate the secondary structure map to see the change of secondary structures along time
+
 #It is posible to perform a salt bridge analysis, the code is in interaction_analysis.py
 
