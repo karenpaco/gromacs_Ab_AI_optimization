@@ -139,6 +139,9 @@ gmx dssp -f md_0_1.xtc -s md_0_1.tpr -o structure.xvg -num numstruc.xvg
 
 #MMPBSA analysis 
    #First the groups have to be wel deifned in the index file
+
+module load gromacs
+module load gmx_mmpbsa
    #load both modules (gromacs and gmx_mmbpsa) at the same time
 
 gmx_MMPBSA --create_input gb 
