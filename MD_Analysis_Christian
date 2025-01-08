@@ -136,3 +136,13 @@ gmx hbond -s md_0_1.tpr -f md_0_1_noPBC1.xtc -n interacting_residues_cogs.ndx -n
 #secondary structure analysis
 gmx dssp -f md_0_1.xtc -s md_0_1.tpr -o structure.xvg -num numstruc.xvg
     #This will generate a .dat file that wil be used in the python script to generate the secondary structure map to see the change of secondary structures along time
+
+#MMPBSA analysis 
+   #First the groups have to be wel deifned in the index file
+   #load both modules (gromacs and gmx_mmbpsa) at the same time
+
+gmx_MMPBSA --create_input gb 
+    #this is to generate a mmbpsa.in file
+
+gmx_MMPBSA -i mmpbsa.in -cs md_0_1.tpr -ct md_0_1.xtc -ci indexfinal3.ndx -cg 17 18 -o results_mmpbsa.dat -eo results_mmpbsa.csv
+   #in this comand the numbers 17 and 18 are the receptor and ligand repectively. Both have to be specified in this commandline
