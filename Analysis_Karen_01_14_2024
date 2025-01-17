@@ -1,8 +1,10 @@
 ##analysis 
-gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o md_0_1_noPBC.xtc -pbc mol -center | gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o md_0_1_noPBC.xtc -pbc cluster -center
-gmx rms -s md_0_1.tpr -f md_0_1_noPBC.xtc -o rmsd.xvg -tu ns
-gmx rms -s em.tpr -f md_0_1_noPBC.xtc -o rmsd_xtal.xvg -tu ns
-gmx rmsf -s md_0_1.tpr -f md_0_1_noPBC1.xtc -o rmsf.xvg
+## Analysis of MD run simulations ###
+## analysis of trajectory files, select "protein" for all comands"
+gmx_mpi trjconv -s md_0_1.tpr -f md_0_1.xtc -o Analysis/md_0_1_noPBC.xtc -pbc cluster -center
+gmx_mpi rms -s md_0_1.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis/rmsd.xvg -tu ns
+gmx_mpi rms -s em.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis/rmsd_xtal.xvg -tu ns
+gmx_mpi rmsf -s md_0_1.tpr -f Analysis/md_0_1_noPBC1.xtc -o Analysis/rmsf.xvg
 
 ##generating differnet index files to analyze RMSD and RMSF separatelly 
 gmx make_ndx -f md_0_1.gro -o index.ndx 
