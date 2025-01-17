@@ -76,7 +76,8 @@ gmx trjconv -s md_0_1.tpr -f trajectory.xtc -o md_0_1.xtc -pbc mol -center -fit 
 gmx cluster -s md_0_1.tpr -f md_0_1_noPBC.xtc -n index.ndx -o clusters.xpm -g cluster.log -dist cluster.xvg -method gromos -cutoff 0.2
 gmx cluster -s md_0_1.tpr -f md_0_1_noPBC.xtc -o index.xpm -g cluster.log -cl cluster.pdb 
     #if the previous comand to generate the cluster.pdb does not work use this one:
-gmx cluster -s md_0_1.tpr -f cluster.xtc -o cluster.xpm -g cluster.log -cl clusters.pdb -method gromos -cutoff 0.1
+gmx trjconv -s md_0_1.tpr -f md_0_1_noPBC.xtc -o cluster.xtc
+gmx cluster -s md_0_1.tpr -f cluster.xtc -o cluster.xpm -g cluster.log -cl clusters.pdb -method gromos -cutoff 0.2
 
     #This for the system in general
     #I selected the Carbon alpha or backbone, the protein choice takes a lot of time so the system wil kill it
