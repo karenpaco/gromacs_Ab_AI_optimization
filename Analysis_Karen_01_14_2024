@@ -11,12 +11,12 @@ gmx_mpi rmsf -s md_0_1.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis/rmsf.xvg
 gmx_mpi make_ndx -f md_0_1.gro -o Analysis/index.ndx 
 #Review .gro file and atom numbering to select for proper index of protein 1 and protein 2, "a" for atom or "r" for residue
 #Press "q" to save and quit
- #a 1-100
     #name protein1
     #a 101-200
     #name protein2
     #a 500-5600
-gmx_mpi select -f md_0_1.gro -n index.ndx
+gmx_mpi select -f md_0_1.gro -n Analysis/index.ndx
+
 ##analysing RMSD and RMSF separately using the index file
     #this only works to generate hte RMSD of each protein, it will not work for the entire complex
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o fitted.xtc -pbc mol -center
