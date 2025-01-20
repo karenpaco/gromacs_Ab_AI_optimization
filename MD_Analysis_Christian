@@ -175,4 +175,5 @@ gmx_MMPBSA -O -i mmpbsa.in -cs md_0_1.tpr -ct md_0_1_noPBC.xtc -ci indexfinal3.n
 
 gmx_MMPBSA_ana -f filename.info (tipically _GMXMMPBSA_info) will open the ploting tool (analyze function) to see all the results in a graphycal way
 
-#If you want to perform a PCA analysis using gibson free energy to see the conformational states of you system, always use the non boundary condition trajectory file
+#If you want to perform a PCA analysis using gibson free energy to see the conformational states of your system, always use the non boundary condition trajectory file. Remember that you have to generate an index file that captures the residues for the 2 proteins (in case of protein-protein inteaction) or protein/ligand but it will be beter if it only captures the alpha backbone because if you use all the atopes per resude it will take a lot of computational resources
+
