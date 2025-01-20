@@ -49,6 +49,11 @@ gmx make_ndx -f md_0_1.gro -o index.ndx
     #a 500-5600
     #name complex but ignoring the first 500 atoms
     #as you can see here,this is how you can select a specific protein or a section of a protein in the complex to be analyzed in RMSF or RMSD
+    #you can also perform this by residue (for example r 1-100 then enter then r 101-200 then enter then q)
+gmx make_ndx -n index.ndx
+    #you can use this to modify the index file or overwrite it (by adding -o index.ndx). This can also be used to visualize the index files and see which groups you have created, once you have check what you have there just dont modify it and press q to exit 
+    # you can mix groups using pipeline, for example: 16 | 17 will allow you to mix the groups 16 and 17, this can be usedfull when you have ligands in you run or if you wnat to make soure you are adding the 2 proteins of you complex together (but this sould be already in the "1 protein" option. Remmeber that the "2 protein-H" option is the protein without considering hidrogens
+
 ##analysing RMSD and RMSF separately using the index file
     #this only works to generate hte RMSD of each protein, it will not work for the entire complex
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o fitted.xtc -pbc mol -center
