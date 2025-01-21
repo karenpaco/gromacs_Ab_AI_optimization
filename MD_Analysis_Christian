@@ -173,7 +173,7 @@ gmx_MMPBSA --create_input PB
 #Gnon-polar (ESURF) is the non-polar energy of solvatation taht depens of the Solvent Accesible Surface (SAS). It is calculated like; Gnon-polar = γ⋅SAS+b in which γ is the surface tension coefficient (tipically from water) and b is a constant term. Gnon-polar It accounts for van der Waals and hydrophobic interactions between the solute and solvent.
 
 
-gmx_MMPBSA -O -i mmpbsa.in -cs md_0_1.tpr -ct md_0_1_noPBC.xtc -ci indexfinal3.ndx -cg 17 18 -cp topol.top -o results_mmpbsa.dat -eo results_mmpbsa.csv
+gmx_MMPBSA -O -i mmpbsa.in -cs md_0_1.tpr -ct md_0_1_noPBC.xtc -ci index.ndx -cg 17 18 -cp topol.top -o results_mmpbsa.dat -eo results_mmpbsa.csv -decomp
    #in this comand the numbers 17 and 18 are the 2 proteins in the protein-protein system repectively. Both have to be specified in this commandline
 
 #for now it seems it only works with leaprc.protein.ff14SB forcefield, I could not run it with AMBER or Amber99SB-ILDN forcefields, never change this forcefield part
