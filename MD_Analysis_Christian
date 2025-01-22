@@ -83,6 +83,8 @@ gmx cluster -s md_0_1.tpr -f md_0_1_noPBC.xtc -o index.xpm -g cluster.log -cl cl
     #if the previous comand to generate the cluster.pdb does not work use this one:
 gmx trjconv -s md_0_1.tpr -f md_0_1_noPBC.xtc -o cluster.xtc
 gmx cluster -s md_0_1.tpr -f cluster.xtc -o cluster.xpm -g cluster.log -cl clusters.pdb -method gromos -cutoff 0.2
+    #important: If you want to convert from time (picoseconds) to frames you can just execute: gmx check -f md_0_1_noPBC.xtc. That will give you
+    #the timestep in ps. Use that timestep to divide the time (in ps) and thatway you wull find the frames. Another way to do it is just multiplying the dr (2 fs or 0.002 ps) by nstxout-compressed (Number of steps between saved frames or save compressed coordinates every 10.0 ps, this is in the md.mdp file, the value is usually 5000) so in this example 0.002 * 5000 = 10 ps which is the value that you will use to devide the time in ps and obtain the frames
 
     #This for the system in general
     #I selected the Carbon alpha or backbone, the protein choice takes a lot of time so the system wil kill it
