@@ -1,5 +1,5 @@
 gmx pdb2gmx -f model.pdb -o model_processed.gro
-python -m propka model.gro -o 7.4
+python -m propka model.gro -o 7.4 | python -m propka model.pdb -o 7.4
     #(we use TIP3P water which is compatible with our Amber99SB-ILDN forcefield)
 gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb -o model_processed.gro -inter
     #(in this case is we have to determine the protonation state of histidine)
@@ -11,22 +11,32 @@ gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb
 gmx editconf -f model_processed.gro -o model_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top 
     #(SPC216: simple point charge water is a pre-equilibrated box of 216 SPC water molecules and it is used for 3-site water models like TIP3P)
+    # use: grep "SOL" topol.top to check if the topology file was updated with the water (SOL) molecules (you should see values once you execute this code, for example SOL 66850)
 gmx grompp -f ions.mdp -c model_solv.gro -p topol.top -o ions.tpr
+    #grep -E "NA|CL|ION" topol.top you should not see any values here because IONS will be added in the next step, this is just ot verify that IONS are not present here and will be added in the next step
 gmx genion -s ions.tpr -o model_solv_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15 
     #(gromacs reads the concentration in mol/L and our target is 150mM)
+    # use: grep -E "NA|CL" topol.top to check if the topology file was updated (you should see values once you execute this code, for example NA 10 CL 10)
 gmx grompp -f minim.mdp -c model_solv_ions.gro -p topol.top -o em.tpr
 gmx mdrun -v -deffnm em 
     #(here we wil use our energy_minimization.sh)
     #sbatch script.sh (it has to be executable, if for any case it is not use "chmod +x script.sh and then "dos2unix script.sh")
+    #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same after the energy minimization)
 gmx energy -f em.edr -o potential.xvg
 gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
 gmx mdrun -deffnm nv 
     #(here we will use our nvt_ensemble.sh)
+    #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same after the NVT ensemble)
 gmx energy -f nvt.edr -o temperature.xvg
 gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
 gmx mdrun -deffnm npt 
     #(here we will use our npt_ensemble.sh)
+    #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same after the NPT ensemble)
 gmx energy -f npt.edr -o pressure.xvg
 gmx energy -f npt.edr -o density.xvg
 gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr
+    #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same before start the MD simulation)
 sbatch -p gpu --gres=gpu:a100:2 --mem=100g --time=168:00:00 md.sh 
+    #(here we use our md.sh)
+    #scontrol show job #ABCDE
+    #scancel ABCDE
