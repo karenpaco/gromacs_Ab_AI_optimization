@@ -24,7 +24,7 @@ gmx mdrun -v -deffnm em
     #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same after the energy minimization)
 gmx energy -f em.edr -o potential.xvg
 gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
-gmx mdrun -deffnm nv 
+gmx mdrun -deffnm nvt 
     #(here we will use our nvt_ensemble.sh)
     #grep -E "SOL|NA|CL" topol.top (after the minimization you should check that the topology file contains the ions and water molecules yet. the amount of CL, NA ions and water SOL should remain the same after the NVT ensemble)
 gmx energy -f nvt.edr -o temperature.xvg
