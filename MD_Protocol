@@ -9,7 +9,7 @@ gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb
     #finally see which is the protonation state of each aminoacid at 7.4 pH)
     #after we analyze with propka at a specific pH "python -m propka model.gro -o 7.4"
     #we shoud use "pdb2gmx -f protein.pdb -inter" and it wil guide us throught each aminoacid to determine their protonation state
-    #Oncec you select all the protonation state if GROMACS ask you for link amoniacids between each other mark no (n)
+    #Once you select all the protonation state if GROMACS ask you for link amoniacids between each other mark no (n)
 gmx editconf -f model_processed.gro -o model_newbox.gro -c -d 1.0 -bt cubic
 gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top 
     #(SPC216: simple point charge water is a pre-equilibrated box of 216 SPC water molecules and it is used for 3-site water models like TIP3P)
