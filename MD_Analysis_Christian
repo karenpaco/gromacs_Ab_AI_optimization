@@ -1,5 +1,5 @@
 gmx pdb2gmx -f model.pdb -o model_processed.gro
-python -m propka model.gro -o 7.4
+python -m propka model.gro -o 7.4 | python -m propka model.pdb -o 7.4
     #(we use TIP3P water which is compatible with our Amber99SB-ILDN forcefield)
 gmx pdb2gmx -f model.pdb -o model_processed.gro -his |  gmx pdb2gmx -f model.pdb -o model_processed.gro -inter
     #(in this case is we have to determine the protonation state of histidine)
