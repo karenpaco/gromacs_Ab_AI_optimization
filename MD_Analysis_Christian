@@ -50,8 +50,14 @@ sbatch -p gpu --gres=gpu:a100:2 --mem=100g --time=168:00:00 md.sh
 
 ##analysis 
 gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o md_0_1_noPBC.xtc -pbc mol -center | gmx trjconv -s md_0_1.tpr -f md_0_1.xtc -o md_0_1_noPBC.xtc -pbc cluster -center
-gmx rms -s md_0_1.tpr -f md_0_1_noPBC.xtc -o rmsd.xvg -tu ns
-gmx rms -s em.tpr -f md_0_1_noPBC.xtc -o rmsd_xtal.xvg -tu ns
+#this is used to correct PBC per molecule (re ensemble each molecule            #this group all the molecules in a box so it bulds all the system in a cohesive whole
+#insividaully inside a box) However, does not maitain coherence in large        #it work well in large complexes (like proteins, membranes, interaction proteins, etc)
+#groups so it can fragment your complex in case there are                       #and maintain the mplecules in a box. it is ideal if your system looks visually "broken" due to a PBC
+#a lot of molecules conected (for systems taht can move freely                  #it is used to maintain macromolecular complexes joined like proteins and membranes
+#like water or small solute
+
+gmx rms -s md_0_1.tpr -f md_0_1_noPBC.xtc -o rmsd.xvg -tu ns # this will execute the RMSD compared with respect to the first frame (structure) of the MD
+gmx rms -s em.tpr -f md_0_1_noPBC.xtc -o rmsd_xtal.xvg -tu ns #this will execite the RMSD compared with respect to the minimized structure 
 gmx rmsf -s md_0_1.tpr -f md_0_1_noPBC1.xtc -o rmsf.xvg
 
 ##generating differnet index files to analyze RMSD and RMSF separatelly 
