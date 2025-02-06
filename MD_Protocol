@@ -17,7 +17,7 @@ gmx solvate -cp model_newbox.gro -cs spc216.gro -o model_solv.gro -p topol.top
 gmx grompp -f ions.mdp -c model_solv.gro -p topol.top -o ions.tpr
     #grep -E "NA|CL|ION" topol.top you should not see any values here because IONS will be added in the next step, this is just ot verify that IONS are not present here and will be added in the next step
 gmx genion -s ions.tpr -o model_solv_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15 
-    # use the option 13 to add water (SOL)
+    # use the option 13 to add the ions (SOL)
     #(gromacs reads the concentration in mol/L and our target is 150mM or 0.15M)
     # use: grep -E "NA|CL" topol.top to check if the topology file was updated (you should see values once you execute this code, for example NA 10 CL 10)
 gmx grompp -f minim.mdp -c model_solv_ions.gro -p topol.top -o em.tpr
