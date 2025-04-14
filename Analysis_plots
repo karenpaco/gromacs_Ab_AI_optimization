@@ -1,1 +1,4 @@
  python Python_scripts/cluster_map.py -i /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/cluster.log -o /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/cluster_csv.csv
+#done for model 53 and 117
+
+python Python_scripts/split_energy.py -i /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/results_mmpbsa.csv
