@@ -3,4 +3,4 @@
 
 python Python_scripts/split_energy.py -i /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/results_mmpbsa.csv
 
-python Python_scripts/10_clusters.py -r /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/Delta.csv -c /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/cluster_csv.csv -o /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/out_.png  -s /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/out.csvC
+python Python_scripts/10_clusters.py -r /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/Delta.csv -c /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/cluster_csv.csv -o /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/10_clusters.png  -s /project/animesh_ray_1465/Aspred/53model/rep1/Analysis/10_clusters_summary.csv
