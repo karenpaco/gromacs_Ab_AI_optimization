@@ -2,6 +2,18 @@
 ## Analysis of MD run simulations ###
 ## analysis of trajectory files, select "protein" for all comands"
 module load gcc/12.3.0 gromacs-gpu/2024.3
+#create index with both molecules
+gmx_mpi select -f md_0_1.gro -n Analysis/index_rec_lig.ndx
+gmx_mpi trjconv -s md_0_1.tpr -f md_0_1.xtc -o Analysis/md_0_1_noPBC.xtc -center  -ur compact -n Analysis/index_rec_lig.ndx
+#centering: combined index, output: system.
+gmx_mpi trjconv -s md_0_1.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis_0_1_noPBC_fit.xtc -fit rot+trans -n Analysis/index_rec_lig.ndx
+# group for less square fit: "backbone" and group for output "system"
+
+gmx_mpi trjconv -s md_0_1.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis/start.pdb -dump 0 -n Analysis/index_rec_lig.ndx
+#group for output:0 
+
+
+
 gmx_mpi trjconv -s md_0_1.tpr -f md_0_1.xtc -o Analysis/md_0_1_noPBC.xtc -pbc cluster -center
 ## the following command will look at the structural stability, choose backbone (optin 4) for least squeare fit and RMSD calculation
 gmx_mpi rms -s md_0_1.tpr -f Analysis/md_0_1_noPBC.xtc -o Analysis/rmsd.xvg -tu ns
