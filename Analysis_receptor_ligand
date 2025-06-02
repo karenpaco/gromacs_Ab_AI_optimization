@@ -1,8 +1,9 @@
 
 ## Analysis of MD run simulations ###
 ## analysis of trajectory files, select "protein" for all comands"
-module load gcc/12.3.0 gromacs-gpu/2024.3
+module load gcc/13.3.0 gromacs-gpu/2024.3
 #create index with both molecules
+gmx_mpi make_ndx -f md_0_1.gro -o Analysis/index_rec_lig.ndx 
 gmx_mpi select -f md_0_1.gro -n Analysis/index_rec_lig.ndx
 gmx_mpi trjconv -s md_0_1.tpr -f md_0_1.xtc -o Analysis/md_0_1_noPBC.xtc -center  -ur compact -n Analysis/index_rec_lig.ndx
 #centering: combined index, output: system.
